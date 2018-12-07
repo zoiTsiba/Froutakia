@@ -22,11 +22,11 @@ public class Basegame {
     public void sequence() {
         for (int i = 0; i < symbols.size(); i++) {
             Trie trie = new Trie();
-            for (Integer temp : sequenceWinnings) {
-                int[] currentLine = new int[temp];
+            for (int j = 0; j < sequenceWinnings.size(); j++)  {
+                int[] currentLine = new int[sequenceWinnings.get(j)];
                 Arrays.fill(currentLine, symbols.get(i));
                 System.out.println("arrays = " + Arrays.toString(currentLine));
-                trie.put(currentLine, 111111111);
+                trie.put(currentLine,paytable.get(j) );
                 System.out.println("trie value = " + trie.get(currentLine));
             }
         }
@@ -64,7 +64,7 @@ public class Basegame {
     public static void main(String[] args) {
 
         Basegame spin = new Basegame();
-        //spin.sequence();
+        spin.sequence();
 
         int[][] CurrentSpin = new int[][]{
                 {6, 6, 1, 1, 6},
@@ -73,7 +73,7 @@ public class Basegame {
 
         };
 
-        spin.scatterCalculation(CurrentSpin);
+        //spin.scatterCalculation(CurrentSpin);
 
 
     }
