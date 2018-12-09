@@ -28,7 +28,7 @@ public class WindowParser {
         // name
         private static final String WINDOW_PATTERN = "window\\s+([0-9]+(x[0-9]+)*)\\s*"; // pattern for the window declaration expression
 
-        private final LinkedList<String> windowList; // symbol list
+        private final LinkedList<String> windowList; // window list
 
         /**
          * Instantiates a {@code WindowParser} class from an expression.
@@ -46,7 +46,7 @@ public class WindowParser {
             Matcher matcher = pattern.matcher(expression);
 
             if (!matcher.matches())
-                throw new IllegalArgumentException(expression + " is not a valid symbol expression");
+                throw new IllegalArgumentException(expression + " is not a valid window expression");
 
             String strWindow = matcher.group(1);
             strWindow = strWindow.trim();
@@ -59,7 +59,7 @@ public class WindowParser {
         }
 
         /**
-         * Returns the widnow as an Iterable.
+         * Returns the window as an Iterable.
          *
          * @return the window as an Iterable
          */
@@ -70,10 +70,10 @@ public class WindowParser {
         // client
         public static void main(String[] args) {
             String expression = "window 4x4";
-            com.company.WindowParser sm = new com.company.WindowParser(expression);
+            com.company.WindowParser wd = new com.company.WindowParser(expression);
 
-            for (String s : sm.window())
-                System.out.println(s);
+            for (String w : wd.window())
+                System.out.println(w);
 
         }
 
