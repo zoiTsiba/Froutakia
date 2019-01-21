@@ -40,6 +40,7 @@ public class Reel {
 			throw new IllegalArgumentException("argument 'reel' to constructor is null");		
 		if (numberOfSymbols < 0)
 			throw new IllegalArgumentException("number of symbols is negative");		
+		this.size = reel.length;
 		boolean[] marked = new boolean[numberOfSymbols];
 		for (int i = 0; i < reel.length; ++i)
 			validate(reel[i]);
@@ -49,7 +50,6 @@ public class Reel {
 			if (!marked[i])
 				throw new IllegalArgumentException("symbol " + i + " is missing from the reel");
 		
-		this.size = reel.length;
 		this.numberOfSymbols = numberOfSymbols;
 		this.frequencies = new int[this.numberOfSymbols];
 		for (int i = 0; i < this.size; ++i)

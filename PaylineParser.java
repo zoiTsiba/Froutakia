@@ -1,116 +1,126 @@
+
+/******************************************************************************
+ *  Compilation:  javac PaylineParser.java
+ *  Execution:    java PaylineParser
+ *  Dependencies: PaylineExpression, PaylineExpression1, PaylineExpression2
+ *
+ *  Parses payline declaration expressions.
+ *
+ ******************************************************************************/
+
 import java.util.LinkedList;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The {@code PaylineParser} class parses a valid "payline declaration"
- * expression and provides a method that returns the positions of this payline
- * as an Iterable and a method that returns this payline's alias.
+ * The {@code PaylineParser} class parses payline declaration expressions from
+ * text input and provides a method that returns those expressions as an
+ * Iterable.
  * 
- * A valid payline decalration expression has thefollowing form:
+ * There are 2 valid syntaxes of a payline declaration expression.
  * 
- * payline paylineAlias: pos1,pos2,..posN;
+ * Syntax 1:
  * 
- * i.e. payline pl1: 2,2,2,2,2;
+ * <b>payline <i>paylineName</i>:
+ * <i>lineOfReel1,lineOfReel2,..,lineOfReelN</i>;</b>
  * 
- * There cannot be whitespace characters between a payline position and a comma,
- * or between the payline's alias and ":". But there can be one or more after
- * the "payline" keyword, after "paylineAlias:" and before ";" . *
+ * i.e. payline payline1: 2,2,2,2,2;
  * 
- * Valid characters for the payline's alias are: A..Z, a..z, 0..9
+ * There cannot be whitespace characters between a digit and a comma, or between
+ * the payline's name and ":". But there can be one or more after the "payline"
+ * keyword, after "paylineName:" and before ";" .
  * 
+ * 
+ * Syntax 2:
+ * 
+ * <b>payline <i>paylineName</i>:
+ * <i>(line1,reel1),(line2,reel2),..,(lineN,reelN)</i>;</b>
+ * 
+ * i.e. payline payline1: (1,1),(2,1),(3,1);
+ * 
+ * There cannot be whitespace characters between a digit and a comma, or between
+ * a digit and a parenthesis, or between a comma and a parenthesis or between
+ * the payline's name and ":". But there can be one or more after the "payline"
+ * keyword, after "paylineName:" and before ";" .
+ * 
+ * Valid characters for the payline's name are: A..Z, a..z, 0..9
  * 
  * @author AccelSprinter
  *
  */
 public class PaylineParser {
 
-	private static final String VALID_PAYLINE_NAME_CHARS_CLASS = "[a-zA-Z0-9]"; // acceptable characters for a payline
-																				// alias
+	// acceptable characters for a payline name
+	private static final String VALID_PAYLINE_NAME_CHARS_CLASS = "[a-zA-Z0-9]";
 
-	private static final String PAYLINE_PATTERN = "payline\\s+(" + VALID_PAYLINE_NAME_CHARS_CLASS
-			+ "+):\\s*(\\d+(,\\d+)*)\\s*;";
+	// pattern #1 for the payline declaration
+	private static final String PAYLINE_PATTERN_1 = "payline\\s+(" + VALID_PAYLINE_NAME_CHARS_CLASS
+			+ "+):\\s+(\\d+(,\\d+)*)\\s*;";
 
-	private final String paylineAlias;
-	private final LinkedList<Integer> paylinePositionList; // payline position list
+	// pattern #2 for the payline declaration
+	private static final String PAYLINE_PATTERN_2 = "payline\\s+(" + VALID_PAYLINE_NAME_CHARS_CLASS
+			+ "+):\\s+(\\(\\d+,\\d+\\)(,\\(\\d+,\\d+\\))*)\\s*;";
+
+	// payline expressions list
+	private final LinkedList<PaylineExpression> paylineExpressions;
 
 	/**
-	 * Instantiates a {@code PaylineParser} class from a valid payline declaration
-	 * expression.
+	 * Instantiates a {@code PaylineParser} class from an {@code In} instance.
 	 * 
-	 * @param expression
-	 *            the payline declaration expression
+	 * @param in
+	 *            the in instance
 	 */
-	public PaylineParser(String expression) {
+	public PaylineParser(In in) {
 
-		if (expression == null)
+		if (in == null)
 			throw new IllegalArgumentException("argument to constructor is null");
 
-		Pattern pattern = Pattern.compile(PAYLINE_PATTERN);
-		Matcher matcher = pattern.matcher(expression);
+		String allText = in.readAll();
 
-		if (!matcher.matches())
-			throw new IllegalArgumentException(expression + " is not a valid payline declaration expression");
+		Pattern pattern;
+		Matcher matcher;
+		paylineExpressions = new LinkedList<>();
 
-		paylineAlias = matcher.group(1);
-		paylinePositionList = new LinkedList<>();
-
-		String strPayline = matcher.group(2);
-		String[] aPayline = strPayline.split(",");
-
-		try {
-			for (String strPos : aPayline) {
-				int intPos = Integer.parseInt(strPos);
-				paylinePositionList.add(intPos);
-			}
-		} catch (NumberFormatException nfe) {
-			throw new IllegalArgumentException("couln not parse payline position from expression", nfe);
+		/* Search for payline pattern #1 */
+		pattern = Pattern.compile(PAYLINE_PATTERN_1);
+		matcher = pattern.matcher(allText);
+		while (matcher.find()) {
+			PaylineExpression1 pe = new PaylineExpression1(matcher);
+			paylineExpressions.add(pe);
 		}
 
+		/* Search for payline pattern #2 */
+		pattern = Pattern.compile(PAYLINE_PATTERN_2);
+		matcher = pattern.matcher(allText);
+		while (matcher.find()) {
+			PaylineExpression2 pe = new PaylineExpression2(matcher);
+			paylineExpressions.add(pe);
+		}
 	}
 
 	/**
-	 * Returns the alias of this payline.
+	 * Returns the payline expressions as an Iterable.
 	 * 
-	 * @return the alias of this payline
+	 * @return the payline expressions as an Iterable
 	 */
-	public String getPaylineAlias() {
-		return paylineAlias;
+	public Iterable<PaylineExpression> expressions() {
+		return paylineExpressions;
 	}
 
-	/**
-	 * Returns the positions of a payline on a window as an Iterable. The first
-	 * position represents the number of line counting from the top of the game
-	 * window, corresponding to the first reel from the left of the window; the
-	 * second position corresponds to the second reel etc.
-	 * 
-	 * @return the positions of a payline on a window as an Iterable
-	 */
-	public Iterable<Integer> paylinePositions() {
-		return paylinePositionList;
-	}
-
-	// debugging client
+	// client
 	public static void main(String[] args) {
-		String expression1 = "payline 1: 3,3,3,3,3;";
-		PaylineParser pp1 = new PaylineParser(expression1);
+		Scanner scanner;
+		In in;
+		String expression = "payline a: 2,2,2,2,2;"
+		 + "payline b: (1,1),(2,1),(3,1),(2,2),(1,3) ;";
 
-		System.out.println("expression: " + expression1);
-		System.out.println("payline name: " + pp1.getPaylineAlias());
-		System.out.print("payline positions: ");
-		for (int paylinePosition : pp1.paylinePositions()) {
-			System.out.print(paylinePosition + " ");
-		}
-		System.out.println("\n\n");
+		scanner = new Scanner(expression);
+		in = new In(scanner);
+		PaylineParser pp = new PaylineParser(in);
 
-		String expression2 = "payline magicalPayline: 2,1,3,1,2;";
-		PaylineParser pp2 = new PaylineParser(expression2);
-
-		System.out.println("expression: " + expression2);
-		System.out.println("payline name: " + pp2.getPaylineAlias());
-		System.out.print("payline positions: ");
-		for (int paylinePosition : pp2.paylinePositions()) {
-			System.out.print(paylinePosition + " ");
+		for (PaylineExpression pe : pp.expressions()) {
+			System.out.println(pe.toString());
 		}
 
 	}
