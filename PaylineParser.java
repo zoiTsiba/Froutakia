@@ -66,17 +66,15 @@ public class PaylineParser {
 	private final LinkedList<PaylineExpression> paylineExpressions;
 
 	/**
-	 * Instantiates a {@code PaylineParser} class from an {@code In} instance.
+	 * Instantiates a {@code PaylineParser} class from a text input.
 	 * 
-	 * @param in
-	 *            the in instance
+	 * @param text
+	 *            the text input
 	 */
-	public PaylineParser(In in) {
+	public PaylineParser(String text) {
 
-		if (in == null)
+		if (text == null)
 			throw new IllegalArgumentException("argument to constructor is null");
-
-		String allText = in.readAll();
 
 		Pattern pattern;
 		Matcher matcher;
@@ -84,7 +82,7 @@ public class PaylineParser {
 
 		/* Search for payline pattern #1 */
 		pattern = Pattern.compile(PAYLINE_PATTERN_1);
-		matcher = pattern.matcher(allText);
+		matcher = pattern.matcher(text);
 		while (matcher.find()) {
 			PaylineExpression1 pe = new PaylineExpression1(matcher);
 			paylineExpressions.add(pe);
@@ -92,7 +90,7 @@ public class PaylineParser {
 
 		/* Search for payline pattern #2 */
 		pattern = Pattern.compile(PAYLINE_PATTERN_2);
-		matcher = pattern.matcher(allText);
+		matcher = pattern.matcher(text);
 		while (matcher.find()) {
 			PaylineExpression2 pe = new PaylineExpression2(matcher);
 			paylineExpressions.add(pe);
@@ -112,12 +110,11 @@ public class PaylineParser {
 	public static void main(String[] args) {
 		Scanner scanner;
 		In in;
-		String expression = "payline a: 2,2,2,2,2;"
-		 + "payline b: (1,1),(2,1),(3,1),(2,2),(1,3) ;";
+		String expression = "payline a: 2,2,2,2,2;" + "payline b: (1,1),(2,1),(3,1),(2,2),(1,3) ;";
 
 		scanner = new Scanner(expression);
 		in = new In(scanner);
-		PaylineParser pp = new PaylineParser(in);
+		PaylineParser pp = new PaylineParser(in.readAll());
 
 		for (PaylineExpression pe : pp.expressions()) {
 			System.out.println(pe.toString());

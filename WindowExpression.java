@@ -33,8 +33,8 @@ import java.util.regex.Matcher;
  */
 public class WindowExpression {
 
-	private final int numberOfReels; // number of reels
 	private final int numberOfLines; // number of lines
+	private final int numberOfReels; // number of reels
 
 	/**
 	 * Instantiates a {@code WindowExpression} class from a {@code Matcher}
@@ -47,10 +47,10 @@ public class WindowExpression {
 		if (matcher == null)
 			throw new IllegalArgumentException("argument to constructor is null");
 
-		String strNumberOfReels = matcher.group(1);
-		numberOfReels = Integer.parseInt(strNumberOfReels);
-		String strNumberOfLines = matcher.group(2);
+		String strNumberOfLines = matcher.group(1);
 		numberOfLines = Integer.parseInt(strNumberOfLines);
+		String strNumberOfReels = matcher.group(2);
+		numberOfReels = Integer.parseInt(strNumberOfReels);
 	}
 
 	/**
@@ -67,16 +67,16 @@ public class WindowExpression {
 	 * 
 	 * @return the number of lines
 	 */
-	public int strNumberOfLines() {
+	public int getNumberOfLines() {
 		return numberOfLines;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(numberOfReels);
-		sb.append(",");
 		sb.append(numberOfLines);
+		sb.append(",");
+		sb.append(numberOfReels);
 		return sb.toString();
 	}
 

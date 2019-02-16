@@ -1,10 +1,7 @@
-package com.company;
-
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class Trie {
+public class SymbolTrie {
 
 
     private Node root;      // root of trie
@@ -21,7 +18,7 @@ public class Trie {
     /**
      * Initializes an empty string symbol table.
      */
-    public Trie() {
+    public SymbolTrie() {
     }
 
 
@@ -154,7 +151,7 @@ public class Trie {
     public static void main(String[] args) {
 
         // build symbol table from standard input
-        Trie trie = new Trie();
+        SymbolTrie trie = new SymbolTrie();
 
         int[] line1 = {1,1};
         int val1 = 50;

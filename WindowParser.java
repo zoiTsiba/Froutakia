@@ -20,10 +20,10 @@ import java.util.regex.Pattern;
  * 
  * The form of a valid window declaration expression is:
  * 
- * <b>window <i>R</i>x<i>L</i>;</b>
+ * <b>window <i>L</i>x<i>R</i>;</b>
  * 
- * , where R, L are positive integers, denoting the number of reels and number
- * of lines respectively.
+ * , where L, R are positive integers, denoting the number of number of lines
+ * and reels respectively.
  * 
  * There cannot be whitespace characters between a window number and an "x", but
  * there can be one or more after the "window" keyword and before ";" .
@@ -40,20 +40,18 @@ public class WindowParser {
 	private final LinkedList<WindowExpression> windowExpressions;
 
 	/**
-	 * Instantiates a {@code WindowParser} class from an expression.
+	 * Instantiates a {@code WindowParser} class from a text input.
 	 * 
-	 * @param expression
-	 *            the window declaration expression
+	 * @param text
+	 *            the text input
 	 */
-	public WindowParser(In in) {
+	public WindowParser(String text) {
 
-		if (in == null)
+		if (text == null)
 			throw new IllegalArgumentException("argument to constructor is null");
 
-		String allText = in.readAll();
-
 		Pattern pattern = Pattern.compile(WINDOW_PATTERN);
-		Matcher matcher = pattern.matcher(allText);
+		Matcher matcher = pattern.matcher(text);
 		windowExpressions = new LinkedList<>();
 
 		while (matcher.find()) {
@@ -77,7 +75,7 @@ public class WindowParser {
 		;
 		Scanner scanner = new Scanner(input);
 		In in = new In(scanner);
-		WindowParser wp = new WindowParser(in);
+		WindowParser wp = new WindowParser(in.readAll());
 
 		for (WindowExpression we : wp.expressions())
 			System.out.println(we);

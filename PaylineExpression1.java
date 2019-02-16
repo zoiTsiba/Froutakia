@@ -71,8 +71,8 @@ public class PaylineExpression1 implements PaylineExpression {
 		int i = 1;
 		for (String strReelCoord : aReelCoords) {
 			int reelCoord = Integer.parseInt(strReelCoord);
-			reelCoordinates.add(reelCoord);
-			lineCoordinates.add(i++);
+			lineCoordinates.add(reelCoord);
+			reelCoordinates.add(i++);
 		}
 	}
 

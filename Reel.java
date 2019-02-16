@@ -1,103 +1,110 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Reel {
 
-	private final int[] reel;
-	private final int[] frequencies;
-	private final int size;
-	private int numberOfSymbols;
+	private final List<Integer> symbols;
+	private final Map<Integer, Integer> symbolToFrequency;
+	private final int numberOfSymbols;
+	private final int numberOfDistinctSymbols;
 
-	public Reel(int[] frequencies) {
-
-		if (frequencies == null)
-			throw new IllegalArgumentException("argument 'freq' to constructor is null");
-		for (int frequency : frequencies) {
-			if (frequency <= 0)
-				throw new IllegalArgumentException("frequencies must be positive");
+	public Reel(int[] symbolsOrFrequencies, boolean symbolsUsed) {
+		if (symbolsOrFrequencies == null) {
+			throw new IllegalArgumentException("argument to constructor is null");
 		}
 
-		this.numberOfSymbols = frequencies.length;
-		this.frequencies = new int[this.numberOfSymbols];
-		for (int i = 0; i < this.numberOfSymbols; ++i)
-			this.frequencies[i] = frequencies[i];
-
-		int total = 0;
-		for (int frequency : frequencies) {
-			total += frequency;
-		}
-		this.size = total;
-		this.reel = new int[this.size];
-		int i = 0;
-		for (int j = 0; j < this.numberOfSymbols; ++j) {
-			for (int k = 0; k < frequencies[j]; ++k) {
-				reel[i++] = j;
+		if (symbolsUsed) {
+			this.numberOfSymbols = symbolsOrFrequencies.length;
+			this.symbols = new ArrayList<>();
+			symbolToFrequency = new HashMap<>();
+			for (int symbol : symbolsOrFrequencies) {
+				this.symbols.add(symbol);
+				int frequency = 1;
+				if (symbolToFrequency.containsKey(symbol)) {
+					frequency += symbolToFrequency.get(symbol);
+				}
+				symbolToFrequency.put(symbol, frequency);
 			}
+			this.numberOfDistinctSymbols = symbolToFrequency.size();
+		} else {
+			this.numberOfDistinctSymbols = symbolsOrFrequencies.length;
+			symbolToFrequency = new HashMap<>();
+			int index = 0;
+			for (int frequency : symbolsOrFrequencies) {
+				symbolToFrequency.put(index++, frequency);
+			}
+			this.symbols = new ArrayList<>();
+			int symbol = 0;
+			for (int frequency : symbolsOrFrequencies) {
+				for (int f = 0; f < frequency; ++f) {
+					this.symbols.add(symbol);
+					symbol++;
+				}
+			}
+			this.numberOfSymbols = this.symbols.size();
 		}
 	}
 
-	public Reel(int[] reel, int numberOfSymbols) {
-
-		if (reel == null)
-			throw new IllegalArgumentException("argument 'reel' to constructor is null");		
-		if (numberOfSymbols < 0)
-			throw new IllegalArgumentException("number of symbols is negative");		
-		this.size = reel.length;
-		boolean[] marked = new boolean[numberOfSymbols];
-		for (int i = 0; i < reel.length; ++i)
-			validate(reel[i]);
-		for (int i = 0; i < reel.length; ++i)
-			marked[reel[i]] = true;
-		for (int i = 0; i < reel.length; ++i)
-			if (!marked[i])
-				throw new IllegalArgumentException("symbol " + i + " is missing from the reel");
-		
-		this.numberOfSymbols = numberOfSymbols;
-		this.frequencies = new int[this.numberOfSymbols];
-		for (int i = 0; i < this.size; ++i)
-			this.frequencies[reel[i]]++;
-		
-		this.reel = new int[this.size];
-		for (int i = 0; i < this.size; ++i)
-			this.reel[i] = reel[i];
-	}
-	
 	public Reel(Reel that) {
-		if (that == null)
-			throw new IllegalArgumentException("argument 'that' to constructor is null");
-		
-		this.size = that.size();
-		this.numberOfSymbols = that.getNumberOfSymbols();
-		
-		this.reel = new int[this.size];
-		for (int i = 0; i < this.size; ++i)
-			this.reel[i] = that.reel[i];
-		
-		this.frequencies = new int[this.numberOfSymbols];
-		for (int i = 0; i < this.numberOfSymbols; ++i)
-			this.frequencies[i] = that.frequencies[i];
+		if (that == null) {
+			throw new IllegalArgumentException("argument is null");
+		}
+
+		this.numberOfSymbols = that.numberOfSymbols;
+		this.numberOfDistinctSymbols = that.numberOfDistinctSymbols;
+		this.symbols = new ArrayList<>();
+		for (int symbol : that.symbols) {
+			this.symbols.add(symbol);
+		}
+		this.symbolToFrequency = new HashMap<>();
+		for (int symbol : that.symbolToFrequency.keySet()) {
+			this.symbolToFrequency.put(symbol, that.symbolToFrequency.get(symbol));
+		}
 	}
 
-	public int size() {
-		return size;
-	}
-	
 	public int getNumberOfSymbols() {
 		return numberOfSymbols;
 	}
 
-	public int getSymbol(int i) {
-		validate(i);
-		return i;
+	public int getNumberOfDistinctSymbols() {
+		return numberOfDistinctSymbols;
+	}
+
+	public int get(int i) {
+		validateIndex(i);
+		return symbols.get(i);
 	}
 
 	public int getFrequency(int symbol) {
-		validate(symbol);
-		return frequencies[symbol];
+		validateSymbol(symbol);
+		return symbolToFrequency.get(symbol);
 	}
-	
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		String sep = "";
+		for (int symbol : symbols) {
+			sb.append(sep);
+			sb.append(symbol);
+			sep = " ";
+		}
+		return sb.toString();
+	}
+
 	// throws IllegalArgumentException, unless 0 <= i < size() - 1
-	protected void validate(int i) {
-		if (i < 0 || i >= this.size)
-			throw new IllegalArgumentException("index/symbol " + i + " is not between 0 and " + (size() - 1));
+	private void validateIndex(int i) {
+		if (i < 0 || i >= numberOfSymbols) {
+			throw new IllegalArgumentException("index " + i + " should be between 0 and " + (numberOfSymbols - 1));
+		}
+	}
+
+	private void validateSymbol(int s) {
+		if (!symbolToFrequency.containsKey(s)) {
+			throw new IllegalArgumentException("symbol " + s + " doesn't exist in this reel");
+		}
 	}
 
 	public static void main(String[] args) {

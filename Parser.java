@@ -12,14 +12,15 @@ public class Parser {
 	public Parser(In in) {
 		if (in == null)
 			throw new IllegalArgumentException("first argument to constructor is null");
+		String allText = in.readAll();
 
-		symbolParser = new SymbolParser(in);
-		windowParser = new WindowParser(in);
-		reelParser   = new ReelParser(in);
-		paylineParser = new PaylineParser(in);
-		paymentParser = new PaymentParser(in);
-		wildcardParser = new WildcardParser(in);
-		scatterParser = new ScatterParser(in);
+		symbolParser = new SymbolParser(allText);
+		windowParser = new WindowParser(allText);
+		reelParser   = new ReelParser(allText);
+		paylineParser = new PaylineParser(allText);
+		paymentParser = new PaymentParser(allText);
+		wildcardParser = new WildcardParser(allText);
+		scatterParser = new ScatterParser(allText);
 	}
 
 	/**

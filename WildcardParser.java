@@ -44,20 +44,18 @@ public class WildcardParser {
 	private final LinkedList<WildcardExpression> wildcardExpressions;
 
 	/**
-	 * Instantiates a {@code WildcardParser} class from an expression.
+	 * Instantiates a {@code WildcardParser} class from a text input.
 	 * 
-	 * @param expression
-	 *            the wildcard symbol declaration expression
+	 * @param text
+	 *            the text input
 	 */
-	public WildcardParser(In in) {
+	public WildcardParser(String text) {
 
-		if (in == null)
+		if (text == null)
 			throw new IllegalArgumentException("argument to constructor is null");
 
-		String allText = in.readAll();
-
 		Pattern pattern = Pattern.compile(WILCARD_PATTERN);
-		Matcher matcher = pattern.matcher(allText);
+		Matcher matcher = pattern.matcher(text);
 		wildcardExpressions = new LinkedList<>();
 
 		while (matcher.find()) {
@@ -80,7 +78,7 @@ public class WildcardParser {
 		String input = "wild joker;";
 		Scanner scanner = new Scanner(input);
 		In in = new In(scanner);
-		WildcardParser wp = new WildcardParser(in);
+		WildcardParser wp = new WildcardParser(in.readAll());
 
 		for (WildcardExpression we : wp.expressions())
 			System.out.println(we);

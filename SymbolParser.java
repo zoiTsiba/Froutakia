@@ -45,20 +45,18 @@ public class SymbolParser {
 	private final LinkedList<SymbolExpression> symbolExpressions;
 
 	/**
-	 * Instantiates a {@code SymbolParser} class from an expression.
+	 * Instantiates a {@code SymbolParser} class from a text input.
 	 * 
-	 * @param expression
-	 *            the symbol declaration expression
+	 * @param text
+	 *            the text input
 	 */
-	public SymbolParser(In in) {
+	public SymbolParser(String text) {
 
-		if (in == null)
+		if (text == null)
 			throw new IllegalArgumentException("argument to constructor is null");
 
-		String allText = in.readAll();
-
 		Pattern pattern = Pattern.compile(SYMBOL_PATTERN);
-		Matcher matcher = pattern.matcher(allText);
+		Matcher matcher = pattern.matcher(text);
 		symbolExpressions = new LinkedList<>();
 
 		while (matcher.find()) {
@@ -83,7 +81,7 @@ public class SymbolParser {
 		;
 		Scanner scanner = new Scanner(input);
 		In in = new In(scanner);
-		SymbolParser sp = new SymbolParser(in);
+		SymbolParser sp = new SymbolParser(in.readAll());
 
 		for (SymbolExpression se : sp.expressions())
 			System.out.println(se);

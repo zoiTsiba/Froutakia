@@ -61,24 +61,22 @@ public class PaymentParser {
 			+ VALID_SYMBOL_CHARS_CLASS + "+(," + VALID_SYMBOL_CHARS_CLASS + "+)*)\\s*;";
 
 	// pattern #2 for the payment declaration
-	private static final String PAYMENT_PATTERN_2 = "pay\\s+(\\d+(,\\d+)*)\\s+" + DIRECTIONS
-			+ "\\s+(\\d+(,\\d+)*)\\s+(" + VALID_SYMBOL_CHARS_CLASS + "+)\\s*;";
+	private static final String PAYMENT_PATTERN_2 = "pay\\s+(\\d+(,\\d+)*)\\s+" + DIRECTIONS + "\\s+(\\d+(,\\d+)*)\\s+("
+			+ VALID_SYMBOL_CHARS_CLASS + "+)\\s*;";
 
 	// symbol expressions list
 	private final LinkedList<PaymentCombinationExpression> paymentCombinationExpressions;
 
 	/**
-	 * Instantiates a {@code PaymentParser} class from an {@code In} instance.
+	 * Instantiates a {@code PaymentParser} class from a text input.
 	 * 
-	 * @param in
-	 *            the {@code In} instance
+	 * @param text
+	 *            the text input
 	 */
-	public PaymentParser(In in) {
+	public PaymentParser(String text) {
 
-		if (in == null)
+		if (text == null)
 			throw new IllegalArgumentException("argument to constructor is null");
-
-		String allText = in.readAll();
 
 		Pattern pattern;
 		Matcher matcher;
@@ -86,20 +84,20 @@ public class PaymentParser {
 
 		/* Search for payment pattern #1 */
 		pattern = Pattern.compile(PAYMENT_PATTERN_1);
-		matcher = pattern.matcher(allText);
+		matcher = pattern.matcher(text);
 		while (matcher.find()) {
 			PaymentExpression1 pe = new PaymentExpression1(matcher);
-			for (PaymentCombinationExpression pce : pe.combinations()) {				
+			for (PaymentCombinationExpression pce : pe.combinations()) {
 				paymentCombinationExpressions.add(pce);
 			}
 		}
 
 		/* Search for payline pattern #2 */
 		pattern = Pattern.compile(PAYMENT_PATTERN_2);
-		matcher = pattern.matcher(allText);
+		matcher = pattern.matcher(text);
 		while (matcher.find()) {
 			PaymentExpression2 pe = new PaymentExpression2(matcher);
-			for (PaymentCombinationExpression pce : pe.combinations()) {				
+			for (PaymentCombinationExpression pce : pe.combinations()) {
 				paymentCombinationExpressions.add(pce);
 			}
 		}
@@ -122,9 +120,9 @@ public class PaymentParser {
 
 		scanner = new Scanner(expression);
 		in = new In(scanner);
-		PaymentParser pp = new PaymentParser(in);
-		
-		for (PaymentCombinationExpression pce : pp.expressions()) {			
+		PaymentParser pp = new PaymentParser(in.readAll());
+
+		for (PaymentCombinationExpression pce : pp.expressions()) {
 			System.out.println(pce);
 		}
 	}

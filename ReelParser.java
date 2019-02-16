@@ -69,17 +69,15 @@ public class ReelParser {
 	private final LinkedList<ReelExpression> reelExpressions;
 
 	/**
-	 * Instantiates a {@code ReelParser} class from an expression.
+	 * Instantiates a {@code ReelParser} class from a text input.
 	 * 
-	 * @param expression
-	 *            the reel declaration expression
+	 * @param text
+	 *            the text input
 	 */
-	public ReelParser(In in) {
+	public ReelParser(String text) {
 
-		if (in == null)
+		if (text == null)
 			throw new IllegalArgumentException("argument to constructor is null");
-
-		String allText = in.readAll();
 
 		Pattern pattern;
 		Matcher matcher;
@@ -87,7 +85,7 @@ public class ReelParser {
 
 		/* Search for reel pattern #1 */
 		pattern = Pattern.compile(REEL_PATTERN_1);
-		matcher = pattern.matcher(allText);
+		matcher = pattern.matcher(text);
 		while (matcher.find()) {
 			ReelExpression1 re = new ReelExpression1(matcher);
 			reelExpressions.add(re);
@@ -95,7 +93,7 @@ public class ReelParser {
 
 		/* Search for reel pattern #2 */
 		pattern = Pattern.compile(REEL_PATTERN_2);
-		matcher = pattern.matcher(allText);
+		matcher = pattern.matcher(text);
 		while (matcher.find()) {
 			ReelExpression2 re = new ReelExpression2(matcher);
 			reelExpressions.add(re);
@@ -115,12 +113,11 @@ public class ReelParser {
 	public static void main(String[] args) {
 		Scanner scanner;
 		In in;
-		String expression = "reel 1: do,re,mi,fa ;"
-				+ "reel 2: 5*a,2*b,1*c,0*d,1*e,3*f,2*g,3*h,2*i ;";
+		String expression = "reel 1: do,re,mi,fa ;" + "reel 2: 5*a,2*b,1*c,0*d,1*e,3*f,2*g,3*h,2*i ;";
 
 		scanner = new Scanner(expression);
 		in = new In(scanner);
-		ReelParser rp = new ReelParser(in);
+		ReelParser rp = new ReelParser(in.readAll());
 
 		for (ReelExpression re : rp.expressions()) {
 			System.out.println(re.toString());

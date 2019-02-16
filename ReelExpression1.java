@@ -40,6 +40,7 @@ public class ReelExpression1 implements ReelExpression {
 	private final String reelName;
 	// symbol list
 	private final List<String> symbols;
+	private final int symbolCount;
 
 	/**
 	 * Instantiates a {@code ReelExpression1} class from a {@code Matcher} instance.
@@ -53,14 +54,15 @@ public class ReelExpression1 implements ReelExpression {
 
 		reelName = matcher.group(1);
 		symbols = new LinkedList<>();
-
 		String strSymbols = matcher.group(2);
 		strSymbols = strSymbols.trim();
 		String[] aSymbols = strSymbols.split(",");
-
+		int auxSymbolCount = 0;
 		for (String strSymbol : aSymbols) {
 			symbols.add(strSymbol);
+			auxSymbolCount++;
 		}
+		this.symbolCount = auxSymbolCount;
 	}
 
 	/**
@@ -71,12 +73,21 @@ public class ReelExpression1 implements ReelExpression {
 	}
 
 	/**
-	 * Returns the reel's symbols as an Iterable.
+	 * Returns the reel expression's symbols as an Iterable.
 	 * 
-	 * @return the reel's symbols as an Iterable
+	 * @return the reel expression's symbols as an Iterable
 	 */
 	public Iterable<String> symbols() {
 		return symbols;
+	}
+
+	/**
+	 * Return the reel expression's symbol count.
+	 * 
+	 * @return the reel expression's symbol count
+	 */
+	public int symbolCount() {
+		return symbolCount;
 	}
 
 	@Override
