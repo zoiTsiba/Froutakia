@@ -21,7 +21,7 @@ public class PaylineSegment {
 		return line;
 	}
 	
-	public int getreel() {
+	public int getReel() {
 		return reel;
 	}
 	
