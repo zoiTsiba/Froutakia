@@ -27,13 +27,14 @@ public class PaylineManager {
 				PaylineSegment ps = new PaylineSegment(line, reel);
 				paylineSegments.add(ps);
 			}
-			Payline payline = new Payline(paylineSegments);
+			final String paylineName = pe.getPaylineName();
+			Payline payline = new Payline(paylineName, paylineSegments);
 			paylines.add(payline);
 		}
 	}
 	
 	public Iterable<Payline> paylines() {
-		return paylines();
+		return paylines;
 	}
 	
 	public String toString() {
