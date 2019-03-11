@@ -1,48 +1,77 @@
 import java.util.Arrays;
 
 public class FullCycleStats {
-	private final ReelManager reelManager;
-	private final SlotMachine slotMachine;
-	private final PaymentManager paymentManager;
-	
+	private final Manager manager;
 
 	public FullCycleStats(Manager manager) {
 		if (manager == null)
 			throw new IllegalArgumentException("argument to constructor is null");
-		this.reelManager = manager.getReelManager();
-		this.slotMachine = reelManager.getSlotMachine();
-		this.paymentManager = manager.getPaymentManager();
-		int[] indices = new int[reelManager.getNumberOfReels()];
-		runFullCycle(indices, 0);
+		this.manager = manager;
+		final PaylineManager paylineManager = manager.getPaylineManager();
+		runFullCycle();
 	}
 
-	public void runFullCycle(int[] indices, int d) {
-		if (indices == null)
-			throw new IllegalArgumentException("first argument is null");
-		if (d >= reelManager.getNumberOfReels())
-			return;
-		for (int i = 0, len = slotMachine.getReel(d).getNumberOfSymbols(); i < len; ++i) {
-			if (d == indices.length - 1) {
-				int[] combination = getCombination(indices);
-				System.out.println(Arrays.toString(combination) + " pays " + paymentManager.getReward(combination));
-				/*
-				 * ~ HERE HAPPENS THE MAGIC ~
-				 */
+	private void runFullCycle() {
+
+		final ReelManager reelManager = manager.getReelManager();
+		final SlotMachine slotMachine = reelManager.getSlotMachine();
+		final WindowManager windowManager = manager.getWindowManager();
+		final PaylineManager paylineManager = manager.getPaylineManager();
+		final PaymentManager paymentManager = manager.getPaymentManager();
+
+		// number of reels
+		int nReels = slotMachine.getNumberOfReels();
+
+		// to keep track of next element in each of the nReels reels
+		int[] indices = new int[nReels];
+
+		while (true) {
+
+			// *****************************************************
+			// BEGIN :: do whatever you want with current window
+			// *****************************************************
+			windowManager.getWindow(indices);
+
+			String windowStr = "\n" + windowManager.windowToString();
+			for (Payline payline : paylineManager.paylines()) {
+				int[] paylineSymbols = windowManager.getPaylineSymbols(payline);
+				int reward = paymentManager.getReward(paylineSymbols);
+
+				StringBuilder sb = new StringBuilder();
+				if (reward > 0) {
+					sb.append(windowStr);
+					windowStr = "";
+					sb.append(payline);
+					sb.append(" pays ");
+					sb.append(reward);
+					System.out.println(sb.toString());
+				}
+
 			}
-			runFullCycle(indices, d + 1);
-			indices[d] = (indices[d] + 1) % slotMachine.getReel(d).getNumberOfSymbols();
+			// *****************************************************
+			// END :: do whatever you want with current window
+			// *****************************************************
+
+			// find the rightmost reel that has more
+			// elements left after the current element
+			// in that reel
+			int next = nReels - 1;
+			while (next >= 0 && (indices[next] + 1 >= slotMachine.getReel(next).getNumberOfSymbols()))
+				next--;
+
+			// no such reel is found so no more combinations left
+			if (next < 0)
+				return;
+
+			// if found move to next element in that reel
+			indices[next]++;
+
+			// for all reels to the right of this
+			// reel current index again points to
+			// first element
+			for (int i = next + 1; i < nReels; i++)
+				indices[i] = 0;
 		}
-	}
-	
-	private int[] getCombination(int[] indices) {
-		if (indices == null) {
-			throw new IllegalArgumentException("argument is null");
-		}
-		int[] combination = new int[indices.length];
-		for (int i = 0; i < indices.length; ++i) {
-			combination[i] = slotMachine.get(i, indices[i]);
-		}
-		return combination;
 	}
 
 	public static void main(String[] args) {
