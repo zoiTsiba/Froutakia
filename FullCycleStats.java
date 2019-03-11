@@ -31,6 +31,7 @@ public class FullCycleStats {
 			// BEGIN :: do whatever you want with current window
 			// *****************************************************
 			windowManager.getWindow(indices);
+			int scattersum = reelManager.scatterSum(indices);
 
 			String windowStr = "\n" + windowManager.windowToString();
 			for (Payline payline : paylineManager.paylines()) {
@@ -44,6 +45,8 @@ public class FullCycleStats {
 					sb.append(payline);
 					sb.append(" pays ");
 					sb.append(reward);
+					sb.append("\n");
+					sb.append("scatters in window: " + scattersum);
 					System.out.println(sb.toString());
 				}
 
