@@ -1,0 +1,37 @@
+symbols a,b,c,d,e,f,g,h,i,j,l,m,n;
+wild n;
+scatter m;
+
+window 3x5;
+
+reel reel1: 1*a,5*b,3*c,6*d,3*e,4*f,2*g,2*h,2*i,1*j,1*l,1*m,1*n;
+reel reel2: 4*a,4*b,9*c,4*d,7*e,3*f,3*g,4*h,3*i,2*j,2*l,2*m,1*n;
+reel reel3: 3*a,6*b,4*c,6*d,3*e,5*f,3*g,2*h,3*i,3*j,3*l,1*m,1*n;
+reel reel4: 5*a,3*b,6*c,3*d,4*e,3*f,5*g,4*h,2*i,2*j,3*l,1*m,2*n;
+reel reel5: 6*a,2*b,6*c,2*d,6*e,3*f,2*g,4*h,3*i,5*j,2*l,1*m,1*n;
+
+
+payline payline1: 2,2,2,2,2;
+payline payline2: 1,1,1,1,1;
+payline payline3: 3,3,3,3,3;
+payline payline4: 2,2,2,2,1;
+payline payline5: 2,2,2,1,2;
+payline payline6: 2,2,1,2,2;
+payline payline7: 2,1,2,2,2;
+payline payline8: 1,2,2,2,2;
+payline payline9: 2,2,3,2,2;
+payline payline10: 2,2,2,2,3;
+
+
+pay 2,5,25,100 left 2,3,4,5 a;
+pay 5,25,100 left 3,4,5 b;
+pay 5,25,100 left 3,4,5 c;
+pay 5,25,100 left 3,4,5 d;
+pay 10,50,125 left 3,4,5 e;
+pay 10,50,125 left 3,4,5 f;
+pay 15,75,250 left 3,4,5 g;
+pay 15,75,250 left 3,4,5 h;
+pay 20,100,400 left 3,4,5 i;
+pay 2,25,125,750 left 2,3,4,5 j;
+pay 2,25,125,750 left 2,3,4,5 l;
+pay 10,250,2500,9000 left 2,3,4,5 n;
