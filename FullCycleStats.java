@@ -1,10 +1,13 @@
 
+import java.text.DecimalFormat;
+
 public class FullCycleStats {
 	private final Manager manager;
 	private double FullCycleSize;
 	private double RTP;
 	private double hitRate;
-	private int hits;
+	private double hitFreq;
+	private double hits;
 	private double totalPrize;
 	private double volatility;
 	private double stDev;
@@ -14,7 +17,9 @@ public class FullCycleStats {
 
 	public double getHitRate() { return hitRate; }
 
-	public int getHits() { return hits; }
+	public double getHitFreq() { return hitFreq; }
+
+	public double getHits() { return hits; }
 
 	public double getTotalPrize() { return totalPrize; }
 
@@ -78,9 +83,9 @@ public class FullCycleStats {
 					totalPrize += reward;
 					hits++;
 				}
-				FullCycleSize++;
-
 			}
+
+			FullCycleSize++;
 			// *****************************************************
 			// END :: do whatever you want with current window
 			// *****************************************************
@@ -94,7 +99,7 @@ public class FullCycleStats {
 
 			// no such reel is found so no more combinations left
 			if (next < 0)
-				return;
+				break;
 
 			// if found move to next element in that reel
 			indices[next]++;
@@ -104,35 +109,46 @@ public class FullCycleStats {
 			// first element
 			for (int i = next + 1; i < nReels; i++)
 				indices[i] = 0;
+
 		}
 
+		int paylineSize = paylineManager.paylinesSize();
+		hitRate = FullCycleSize / hits;
+		hitFreq = hits / FullCycleSize ;
+		RTP = totalPrize / (FullCycleSize * paylineSize);
 	}
 
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
+		DecimalFormat df = new DecimalFormat("#.#####");
 		String filename = "game.txt";
 		In in = new In(filename);
 		Manager manager = new Manager(in);
-		com.company.FullCycleStats fcs = new com.company.FullCycleStats(manager);
+		FullCycleStats fcs = new FullCycleStats(manager);
 
 		long elapsedTimeMillis = System.currentTimeMillis()-start;
 		float elapsedTimeMin = elapsedTimeMillis/(60*1000F);
 		fcs.sb.append(" Time :");
 		fcs.sb.append(elapsedTimeMin);
 		fcs.sb.append("\n");
+		fcs.sb.append(" FullCycle Size :");
+		fcs.sb.append(df.format(fcs.getFullCycleSize()));
+		fcs.sb.append("\n");
 		fcs.sb.append(" Total prize :");
-		fcs.sb.append(fcs.getTotalPrize());
+		fcs.sb.append(df.format(fcs.getTotalPrize()));
 		fcs.sb.append("\n");
 		fcs.sb.append(" Hits :");
-		fcs.sb.append(fcs.getHits());
+		fcs.sb.append(df.format(fcs.getHits()));
 		fcs.sb.append("\n");
 		fcs.sb.append(" HitRate :");
-		fcs.hitRate = fcs.getFullCycleSize() / fcs.getHits();
-		fcs.sb.append(fcs.getHitRate());
+		fcs.sb.append(df.format(fcs.getHitRate()));
+		fcs.sb.append("\n");
+		fcs.sb.append(" Hit Frequency :");
+		fcs.sb.append(df.format(fcs.getHitFreq()));
+		fcs.sb.append("%");
 		fcs.sb.append("\n");
 		fcs.sb.append(" RTP :");
-		fcs.RTP = fcs.getTotalPrize()/fcs.getFullCycleSize();
-		fcs.sb.append( fcs.getRTP());
+		fcs.sb.append(df.format(fcs.getRTP()));
 		fcs.sb.append("\n");
 		System.out.println(fcs.sb.toString());
 	}
