@@ -11,23 +11,38 @@ public class FullCycleStats {
 	private double totalPrize;
 	private double volatility;
 	private double stDev;
-	StringBuilder sb = new StringBuilder();
 
-	public double getRTP() { return RTP; }
+	public double getRTP() {
+		return RTP;
+	}
 
-	public double getHitRate() { return hitRate; }
+	public double getHitRate() {
+		return hitRate;
+	}
 
-	public double getHitFreq() { return hitFreq; }
+	public double getHitFreq() {
+		return hitFreq;
+	}
 
-	public double getHits() { return hits; }
+	public double getHits() {
+		return hits;
+	}
 
-	public double getTotalPrize() { return totalPrize; }
+	public double getTotalPrize() {
+		return totalPrize;
+	}
 
-	public double getVolatility() { return volatility; }
+	public double getVolatility() {
+		return volatility;
+	}
 
-	public double getStDev() { return stDev; }
+	public double getStDev() {
+		return stDev;
+	}
 
-	public double getFullCycleSize() { return FullCycleSize; }
+	public double getFullCycleSize() {
+		return FullCycleSize;
+	}
 
 	public FullCycleStats(Manager manager) {
 		if (manager == null)
@@ -40,7 +55,6 @@ public class FullCycleStats {
 		volatility = 0;
 		stDev = 0;
 		FullCycleSize = 0;
-		final PaylineManager paylineManager = manager.getPaylineManager();
 		runFullCycle();
 	}
 
@@ -60,26 +74,23 @@ public class FullCycleStats {
 
 		while (true) {
 
+			windowManager.getWindow(indices);
 			// *****************************************************
 			// BEGIN :: do whatever you want with current window
 			// *****************************************************
-			windowManager.getWindow(indices);
-			int scattersum = reelManager.scatterSum(indices);
-
-			String windowStr = "\n" + windowManager.windowToString();
 			for (Payline payline : paylineManager.paylines()) {
 				int[] paylineSymbols = windowManager.getPaylineSymbols(payline);
 				int reward = paymentManager.getReward(paylineSymbols);
 
 				if (reward > 0) {
-//                    sb.append(windowStr);
-//                    windowStr = "";
-//                    sb.append(payline);
-//                    sb.append(" pays ");
-//                    sb.append(reward);
-//                    sb.append("\n");
-//                    sb.append("scatters in window: " + scattersum);
-//                    System.out.println(sb.toString());
+					// sb.append(windowStr);
+					// windowStr = "";
+					// sb.append(payline);
+					// sb.append(" pays ");
+					// sb.append(reward);
+					// sb.append("\n");
+					// sb.append("scatters in window: " + scattersum);
+					// System.out.println(sb.toString());
 					totalPrize += reward;
 					hits++;
 				}
@@ -114,43 +125,54 @@ public class FullCycleStats {
 
 		int paylineSize = paylineManager.paylinesSize();
 		hitRate = FullCycleSize / hits;
-		hitFreq = hits / FullCycleSize ;
+		hitFreq = hits / FullCycleSize;
 		RTP = totalPrize / (FullCycleSize * paylineSize);
 	}
 
 	public static void main(String[] args) {
-		long start = System.currentTimeMillis();
-		DecimalFormat df = new DecimalFormat("#.#####");
-		String filename = "game.txt";
+
+		final String filename;
+		final StringBuilder sb;
+		long start, end;
+		DecimalFormat df;
+		float elapsedTimeMinutes;
+
+//		filename = "game.txt";
+		filename = "IO/bill.txt";
+		sb = new StringBuilder();
+		df = new DecimalFormat("#.#####");
+
+		start = System.currentTimeMillis();
 		In in = new In(filename);
 		Manager manager = new Manager(in);
 		FullCycleStats fcs = new FullCycleStats(manager);
+		end = System.currentTimeMillis();
 
-		long elapsedTimeMillis = System.currentTimeMillis()-start;
-		float elapsedTimeMin = elapsedTimeMillis/(60*1000F);
-		fcs.sb.append(" Time :");
-		fcs.sb.append(elapsedTimeMin);
-		fcs.sb.append("\n");
-		fcs.sb.append(" FullCycle Size :");
-		fcs.sb.append(df.format(fcs.getFullCycleSize()));
-		fcs.sb.append("\n");
-		fcs.sb.append(" Total prize :");
-		fcs.sb.append(df.format(fcs.getTotalPrize()));
-		fcs.sb.append("\n");
-		fcs.sb.append(" Hits :");
-		fcs.sb.append(df.format(fcs.getHits()));
-		fcs.sb.append("\n");
-		fcs.sb.append(" HitRate :");
-		fcs.sb.append(df.format(fcs.getHitRate()));
-		fcs.sb.append("\n");
-		fcs.sb.append(" Hit Frequency :");
-		fcs.sb.append(df.format(fcs.getHitFreq()));
-		fcs.sb.append("%");
-		fcs.sb.append("\n");
-		fcs.sb.append(" RTP :");
-		fcs.sb.append(df.format(fcs.getRTP()));
-		fcs.sb.append("\n");
-		System.out.println(fcs.sb.toString());
+		elapsedTimeMinutes = (end - start) / (60 * 1000F);
+		sb.append(" Time : ");
+		sb.append(elapsedTimeMinutes);
+		sb.append("m");
+		sb.append("\n");
+		sb.append(" FullCycle Size :");
+		sb.append(df.format(fcs.getFullCycleSize()));
+		sb.append("\n");
+		sb.append(" Total prize :");
+		sb.append(df.format(fcs.getTotalPrize()));
+		sb.append("\n");
+		sb.append(" Hits :");
+		sb.append(df.format(fcs.getHits()));
+		sb.append("\n");
+		sb.append(" HitRate :");
+		sb.append(df.format(fcs.getHitRate()));
+		sb.append("\n");
+		sb.append(" Hit Frequency :");
+		sb.append(df.format(fcs.getHitFreq()));
+		sb.append("%");
+		sb.append("\n");
+		sb.append(" RTP :");
+		sb.append(df.format(fcs.getRTP()));
+		sb.append("\n");
+		System.out.println(sb.toString());
 	}
 
 }
