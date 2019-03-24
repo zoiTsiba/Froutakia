@@ -96,6 +96,16 @@ public class ScatterExpression {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(scatterName);
+		sb.append(" pays ");
+		for (int amount : amounts()) {
+			sb.append(amount);
+			sb.append(" ");
+		}
+		sb.append("on ");
+		for (int count : counts()) {
+			sb.append(count);
+			sb.append(" ");
+		}
 		return sb.toString();
 	}
 

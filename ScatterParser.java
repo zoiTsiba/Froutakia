@@ -42,7 +42,7 @@ public class ScatterParser {
 	// private static final String SCATTER_PATTERN = "scatter\\s+(" +
 	// VALID_SYMBOL_NAME_CHARS_CLASS + "+)\\s*;";
 	private static final String SCATTER_PATTERN = "scatter\\s+(" + VALID_SYMBOL_NAME_CHARS_CLASS + 
-			"+)\\s+pays\\s+(d+(,d+)?)\\s+on\\s+(d+(,d+)?)\\s*;";
+			"+)\\s+pays\\s+(\\d+(,\\d+)*)\\s+on\\s+(\\d+(,\\d+)*)\\s*;";
 
 	// scatter symbol expressions list
 	private final LinkedList<ScatterExpression> scatterExpressions;
