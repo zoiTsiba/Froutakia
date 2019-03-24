@@ -67,7 +67,7 @@ public class ScatterExpression {
 	    	amounts.add(intAmount);
 	    }
 	    
-	    String[] strCountArray = matcher.group(2).trim().split(",");
+	    String[] strCountArray = matcher.group(4).trim().split(",");
 	    for (String strCount: strCountArray) {
 	    	int intCount = Integer.parseInt(strCount.trim());
 	    	counts.add(intCount);

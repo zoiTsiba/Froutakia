@@ -129,8 +129,8 @@ public class FullCycleStats {
 		DecimalFormat df;
 		float elapsedTimeMinutes;
 
-		filename = "game.txt";
-//		filename = "IO/bill.txt";
+//		filename = "game.txt";
+		filename = "IO/bill.txt";
 		sb = new StringBuilder();
 		df = new DecimalFormat("#.#####");
 
