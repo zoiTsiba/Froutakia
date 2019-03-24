@@ -8,6 +8,8 @@
  *
  ******************************************************************************/
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 /**
@@ -39,6 +41,8 @@ import java.util.regex.Matcher;
 public class ScatterExpression {
 
 	private final String scatterName;
+	private final List<Integer> amounts;
+	private final List<Integer> counts;
 
 	/**
 	 * Instantiates a {@code ScatterExpression} class from a {@code Matcher}
@@ -50,8 +54,24 @@ public class ScatterExpression {
 	public ScatterExpression(Matcher matcher) {
 		if (matcher == null)
 			throw new IllegalArgumentException("argument to constructor is null");
+		
 
 		scatterName = matcher.group(1);
+		amounts = new ArrayList<>();
+		counts = new ArrayList<>();
+		
+		
+		String[] strAmountArray = matcher.group(2).trim().split(",");
+	    for (String strAmount : strAmountArray) {
+	    	int intAmount = Integer.parseInt(strAmount.trim());
+	    	amounts.add(intAmount);
+	    }
+	    
+	    String[] strCountArray = matcher.group(2).trim().split(",");
+	    for (String strCount: strCountArray) {
+	    	int intCount = Integer.parseInt(strCount.trim());
+	    	counts.add(intCount);
+	    }
 	}
 
 	/**
@@ -61,6 +81,14 @@ public class ScatterExpression {
 	 */
 	public String getScatterName() {
 		return scatterName;
+	}
+	
+	public Iterable<Integer> amounts() {
+		return amounts;
+	}
+	
+	public Iterable<Integer> counts() {
+		return counts;
 	}
 
 

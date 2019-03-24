@@ -6,6 +6,7 @@ public class Manager {
 	private final ReelManager reelManager;
 	private final PaylineManager paylineManager;
 	private final PaymentManager paymentManager;
+	private final ScatterManager scatterManager;
 	
 	
 	public Manager(In in) {
@@ -19,6 +20,7 @@ public class Manager {
 		this.reelManager = new ReelManager(this);
 		this.paylineManager = new PaylineManager(this);
 		this.paymentManager = new PaymentManager(this);
+		this.scatterManager = new ScatterManager(this);
 	}
 	
 	public Parser getParser() {
@@ -58,6 +60,13 @@ public class Manager {
 			throw new NullPointerException("Payment Manager has not been initialized");
 		}
 		return paymentManager;
+	}
+	
+	public ScatterManager getScatterManager() {
+		if (scatterManager == null) {
+			throw new NullPointerException("Scatter Manager has not been initialized");
+		}
+		return scatterManager;
 	}
 
 	public static void main(String[] args) {

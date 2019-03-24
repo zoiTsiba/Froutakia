@@ -9,7 +9,6 @@ public class ReelManager {
 	private final SlotMachine slotMachine;
 	private final List<String> reelNames;
 	private final int numberOfReels;
-	private final List<Integer>[] scatterSums;
 
 	public ReelManager(Manager manager) {
 		if (manager == null) {
@@ -19,7 +18,6 @@ public class ReelManager {
 		final Parser parser = manager.getParser();
 		final ReelParser reelParser = parser.getReelParser();
 		final SymbolManager symbolManager = manager.getSymbolManager();
-		final WindowManager windowManager = manager.getWindowManager();
 		final List<Reel> reels = new ArrayList<>();
 		reelNames = new ArrayList<>();
 
@@ -37,28 +35,6 @@ public class ReelManager {
 		}
 		slotMachine = new SlotMachine(reels);
 		numberOfReels = slotMachine.getNumberOfReels();
-
-		final int nLines = windowManager.getNumberOfLines();
-		final int nReels = windowManager.getNumberOfReels();
-		scatterSums = new List[reels.size()];
-		for (int i = 0; i < reels.size(); ++i) {
-			scatterSums[i] = new ArrayList<>();
-		}
-		for (int reelIndex = 0; reelIndex < nReels; ++reelIndex) {
-			Reel reel = slotMachine.getReel(reelIndex);
-			int nSymbols = reel.getNumberOfSymbols();
-			for (int symbolIndex = 0; symbolIndex < nSymbols; ++symbolIndex) {
-				int sum = 0;
-				for (int lineIndex = 0; lineIndex < nLines; ++lineIndex) {
-					int currectSymbolIndex = (symbolIndex + lineIndex) % nSymbols;
-					if (windowManager.isValid(lineIndex + 1, reelIndex + 1)
-							&& symbolManager.isScatter(reel.get(currectSymbolIndex))) {
-						sum++;
-					}
-				}
-				scatterSums[reelIndex].add(sum);
-			}
-		}
 	}
 
 	public SlotMachine getSlotMachine() {
@@ -76,20 +52,6 @@ public class ReelManager {
 		return reelNames.get(i);
 	}
 	
-	public int scatterSum(int[] indices) {
-		if (indices == null) {
-			throw new IllegalArgumentException("null argument");
-		}
-		if (indices.length != numberOfReels) {
-			throw new IllegalArgumentException("length of indices should equal number of reels");
-		}
-		
-		int sum = 0;
-		for (int i = 0; i < numberOfReels; ++i) {
-			sum += scatterSums[i].get(indices[i]);
-		}
-		return sum;
-	}
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
