@@ -83,20 +83,12 @@ public class FullCycleStats {
 				int reward = paymentManager.getReward(paylineSymbols);
 
 				if (reward > 0) {
-					// sb.append(windowStr);
-					// windowStr = "";
-					// sb.append(payline);
-					// sb.append(" pays ");
-					// sb.append(reward);
-					// sb.append("\n");
-					// sb.append("scatters in window: " + scattersum);
-					// System.out.println(sb.toString());
-					totalPrize += reward;
-					hits++;
+					totalPrize += reward; // Total reward of the Full Cycle
+					hits++; // Winning combinations of the Full Cycle
 				}
 			}
 
-			FullCycleSize++;
+			FullCycleSize++; // All combinations of the Full Cycle
 			// *****************************************************
 			// END :: do whatever you want with current window
 			// *****************************************************
@@ -123,10 +115,10 @@ public class FullCycleStats {
 
 		}
 
-		int paylineSize = paylineManager.paylinesSize();
-		hitRate = FullCycleSize / hits;
-		hitFreq = hits / FullCycleSize;
-		RTP = totalPrize / (FullCycleSize * paylineSize);
+		int paylineSize = paylineManager.paylinesSize(); //  Paylines  of the Full Cycle
+		hitRate = FullCycleSize / hits; // Hit rate is the ratio of winning combinations in a Full Cycle
+		hitFreq = hits / FullCycleSize; // Hit frequency is the odds that the machine will hit a payout on any given spin.
+		RTP = totalPrize / (FullCycleSize * paylineSize); // Return to player (RTP) is the theoretical percentage of playing money that returns to the player
 	}
 
 	public static void main(String[] args) {
@@ -137,8 +129,8 @@ public class FullCycleStats {
 		DecimalFormat df;
 		float elapsedTimeMinutes;
 
-//		filename = "game.txt";
-		filename = "IO/bill.txt";
+		filename = "game.txt";
+//		filename = "IO/bill.txt";
 		sb = new StringBuilder();
 		df = new DecimalFormat("#.#####");
 
@@ -151,7 +143,7 @@ public class FullCycleStats {
 		elapsedTimeMinutes = (end - start) / (60 * 1000F);
 		sb.append(" Time : ");
 		sb.append(elapsedTimeMinutes);
-		sb.append("m");
+		sb.append(" min");
 		sb.append("\n");
 		sb.append(" FullCycle Size :");
 		sb.append(df.format(fcs.getFullCycleSize()));
@@ -166,7 +158,7 @@ public class FullCycleStats {
 		sb.append(df.format(fcs.getHitRate()));
 		sb.append("\n");
 		sb.append(" Hit Frequency :");
-		sb.append(df.format(fcs.getHitFreq()));
+		sb.append(df.format(fcs.getHitFreq()*100));
 		sb.append("%");
 		sb.append("\n");
 		sb.append(" RTP :");
