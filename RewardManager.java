@@ -32,7 +32,7 @@ public class RewardManager {
 			throw new IllegalArgumentException("scatter: " + scatter + "hasn't been declared");
 		Map<Integer, Integer> countToReward = scatterToCountToReward.get(scatter);
 		if (!countToReward.containsKey(count))
-			throw new IllegalArgumentException("count: " + count + "doesn't exist for scatter: " + scatter);
+			throw new IllegalArgumentException("count: " + count + " doesn't exist for scatter: " + scatter);
 		return countToReward.get(count);
 	}
 }
