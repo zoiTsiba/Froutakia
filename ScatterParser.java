@@ -20,7 +20,8 @@ import java.util.regex.Pattern;
  * 
  * The form of a valid scatter symbol declaration expression is:
  * 
- * <b>scatter <i>scatterSymbol</i>;</b>
+ * <b>scatter <i>scatterSymbol</i> pays amount1,amount2,..,amountN on
+ * count1,count2,..,countN;</b>
  * 
  * Valid characters for the scatter symbol's name are:
  * 
@@ -38,7 +39,10 @@ public class ScatterParser {
 	private static final String VALID_SYMBOL_NAME_CHARS_CLASS = "[a-zA-Z0-9]";
 
 	// pattern for a scatter symbol declaration expression
-	private static final String SCATTER_PATTERN = "scatter\\s+(" + VALID_SYMBOL_NAME_CHARS_CLASS + "+)\\s*;";
+	// private static final String SCATTER_PATTERN = "scatter\\s+(" +
+	// VALID_SYMBOL_NAME_CHARS_CLASS + "+)\\s*;";
+	private static final String SCATTER_PATTERN = "scatter\\s+(" + VALID_SYMBOL_NAME_CHARS_CLASS + 
+			"+)\\s+pays\\s+(\\d+(,\\d+)*)\\s+on\\s+(\\d+(,\\d+)*)\\s*;";
 
 	// scatter symbol expressions list
 	private final LinkedList<ScatterExpression> scatterExpressions;
@@ -74,7 +78,7 @@ public class ScatterParser {
 
 	// client
 	public static void main(String[] args) {
-		String input = "symbols a,b,c,d,e,f,g;\r\n" + "\r\n" + "wild g;\r\n" + "\r\n" + "scatter d;";
+		String input = "symbols a,b,c,d,e,f,g;\r\n" + "\r\n" + "wild g;\r\n" + "\r\n" + "scatter d pays 5,10,20 on 2,3,4;";
 		Scanner scanner = new Scanner(input);
 		In in = new In(scanner);
 		ScatterParser sp = new ScatterParser(in.readAll());

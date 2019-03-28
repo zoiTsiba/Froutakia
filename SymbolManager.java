@@ -60,51 +60,55 @@ public class SymbolManager {
 			literalToNumericScatter.put(scatterSymbol, scatterNumeric);
 		}
 	}
-	
+
 	public String getLiteralSymbol(int symbolNumeric) {
 		if (!numericToLiteralAll.containsKey(symbolNumeric)) {
 			throw new IllegalArgumentException(symbolNumeric + " is not a declared symbol");
 		}
 		return numericToLiteralAll.get(symbolNumeric);
 	}
-	
+
 	public int getNumericSymbol(String symbolLiteral) {
 		if (!literalToNumericAll.containsKey(symbolLiteral)) {
 			throw new IllegalArgumentException(symbolLiteral + " is not an existing numeric symbol");
 		}
 		return literalToNumericAll.get(symbolLiteral);
 	}
-	
+
 	public boolean isSymbol(String symbolLiteral) {
 		return literalToNumericAll.containsKey(symbolLiteral);
 	}
-	
+
 	public boolean isSymbol(int symbolNumeric) {
 		return numericToLiteralAll.containsKey(symbolNumeric);
 	}
-	
+
 	public boolean isWildcard(String symbolLiteral) {
 		return literalToNumericWildcard.containsKey(symbolLiteral);
 	}
-	
+
 	public boolean isWildcard(int symbolNumeric) {
 		return numericToLiteralWildcard.containsKey(symbolNumeric);
 	}
-	
+
 	public boolean isScatter(String symbolLiteral) {
 		return literalToNumericScatter.containsKey(symbolLiteral);
 	}
-	
+
 	public boolean isScatter(int symbolNumeric) {
 		return numericToLiteralScatter.containsKey(symbolNumeric);
 	}
-	
+
 	public int getNumberOfAllSymbols() {
 		return literalToNumericAll.size();
 	}
-	
+
 	public Iterable<Integer> getAllWildcards() {
 		return numericToLiteralWildcard.keySet();
+	}
+
+	public Iterable<Integer> getAllScatters() {
+		return numericToLiteralScatter.keySet();
 	}
 
 	private static class SymbolManagerValidator {
@@ -113,6 +117,7 @@ public class SymbolManager {
 			checkWildcardExistsInSymbols(parser);
 			checkScatterExistsInSymbols(parser);
 			checkDuplicatesBetweenWildcardAndScatter(parser);
+			checkCorrespondanceBetweenAmountsAndCountsForScatter(parser);
 		}
 
 		private static void checkDuplicates(Parser parser) {
@@ -181,6 +186,25 @@ public class SymbolManager {
 				if (wildcardSymbols.contains(scatterSymbol)) {
 					throw new IllegalArgumentException(
 							"'" + scatterSymbol + "' has been declared as both wildcard symbol and scatter symbol");
+				}
+			}
+		}
+
+		private static void checkCorrespondanceBetweenAmountsAndCountsForScatter(Parser parser) {
+
+			final ScatterParser scatterParser = parser.getScatterParser();
+
+			for (ScatterExpression se : scatterParser.expressions()) {
+				int amounts = 0;
+				int counts = 0;
+				for (int x : se.amounts())
+					amounts++;
+				for (int x : se.counts())
+					counts++;
+				String scatterName = se.getScatterName();
+				if (amounts != counts) {
+					throw new IllegalArgumentException("scatter symbol: " + scatterName + " has " + amounts
+							+ " amounts but " + counts + " counts");
 				}
 			}
 		}
