@@ -1,5 +1,6 @@
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -83,6 +84,7 @@ public class FullCycleStats {
         int[] indices = new int[nReels];
 
         int temp = 0;
+
         while (true) {
 
             windowManager.getWindow(indices);
@@ -90,32 +92,42 @@ public class FullCycleStats {
             // *****************************************************
             // BEGIN :: do whatever you want with current window
             // *****************************************************
+
+            // Itterate through all PAYLINES
             int screenPrize = 0;
             for (Payline payline : paylineManager.paylines()) {
                 int[] paylineSymbols = windowManager.getPaylineSymbols(payline);
                 int reward = paymentManager.getReward(paylineSymbols);
 
+                // Calculate the Winnings only
                 if (reward > 0) {
                     totalPrize += reward; // Total reward of the Full Cycle
                     hits++; // Winning combinations of the Full Cycle
-                    screenPrize += reward; // Full prize for the screen table (all paylines)
+                    // screenPrize += reward; // Full prize for the screen table (all paylines)
                 }
 
             }
 
+            // Adding scatter PRIZES
             for (Integer scatter : symbolManager.getAllScatters()) {
 
-                int scatReels = scatterManager.getNumberOfReelsContainingScatters(scatter, indices);
-                int scatCombs = scatterManager.getNumberOfScatterCombinations(scatter, indices);
+                int scatReels = scatterManager.getNumberOfReelsContainingScatters(scatter, indices); // Calculate the scatter combination in the window
+                int scatCombs = scatterManager.getNumberOfScatterCombinations(scatter, indices); // Calculate how many scatter combinations exists in the window (e.x. 2 or more scatter in one reel produce multiple winning scatter combinations)
                 if (scatReels >= 2) {
-                    totalPrize += rewardManager.getScatterReward(scatter, scatReels);
-                    screenPrize += rewardManager.getScatterReward(scatter, scatReels);
-                    hits++;
+                    int scatTotalPrize = rewardManager.getScatterReward(scatter, scatReels) * scatCombs; // The Total Prize of the window winning scatter combinations
+                    totalPrize += scatTotalPrize; // Adding to Total Prize of Full Cycle
+                    screenPrize += scatTotalPrize; // Adding to Total Prize of the current window
+                    hits++; // Winning hits of Full Cycle
+//                    System.out.println("Scatters on reel " + scatReels + " Scatter combs " + scatCombs);
+//                    System.out.println(windowManager.windowToString());
                 }
 //                if (scatReels == 4) { // scatter hits for quartet is 27540 and for quintet is 486
 //                    System.out.println("Scatters on reel " + scatReels + " Scatter combs " + scatCombs);
-//                    temp++;
+//                    for (int i = 0; i < scatCombs; i++) {
+//                        temp++;
+//                    }
 //                    System.out.println(temp);
+//                    System.out.println(windowManager.windowToString());
 //                }
             }
 
@@ -162,12 +174,11 @@ public class FullCycleStats {
         hitFreq = hits / FullCycleSize; // Hit frequency is the odds that the machine will hit a payout on any given spin.
         RTP = totalPrize / (FullCycleSize * paylineSize); // Return to player (RTP) is the theoretical percentage of playing money that returns to the player
 
-
         // Iterate through screen prizes and how many times they appear
         Iterator it = prizeCounters.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
-            System.out.println(pair.getKey() + " = " + pair.getValue());
+            //System.out.println(pair.getKey() + " = " + pair.getValue());
             int prize = (int) pair.getKey();
             int prizeHits = (int) pair.getValue();
             double prizeProb = prizeHits / FullCycleSize;
@@ -181,17 +192,19 @@ public class FullCycleStats {
         volatility = confLevel * stDev;
 
         // Output for Excel
-        String out = "";
-        out += ("Full Cycle " + "\t" + FullCycleSize + "\n");
-        out += ("Total Prize  " + "\t" + totalPrize + "\n");
-        out += ("Hits " + "\t" + hits + "\n");
-        out += ("Hit frequency " + "\t" + hitFreq + "\n");
-        out += ("Hit rate " + "\t" + hitRate + "\n");
-        out += ("RTP " + "\t" + RTP + "\n");
-        out += ("Standard deviation " + "\t" + stDev + "\n");
-        out += ("Volatility " + "\t" + volatility + "\n");
+        DecimalFormat df = new DecimalFormat("#.#####");
 
-        excelOutputStatistics.ExcelOutputBuilder(out);
+        String out = "\u001B Statistics Full Cycle\n\n";
+        out += ("Full Cycle " + "\t" + df.format(FullCycleSize) + "\n");
+        out += ("Total Prize  " + "\t" + df.format(totalPrize) + "\n");
+        out += ("Hits " + "\t" + df.format(hits) + "\n");
+        out += ("Hit frequency " + "\t" + df.format(hitFreq) + "\n");
+        out += ("Hit rate " + "\t" + df.format(hitRate) + "\n");
+        out += ("RTP " + "\t" + df.format(RTP) + "\n");
+        out += ("Standard deviation " + "\t" + df.format(stDev) + "\n");
+        out += ("Volatility " + "\t" + df.format(volatility) + "\n");
+
+        // excelOutputStatistics.ExcelOutputBuilder(out); // Writing the output to an excel file.xls
     }
 
     public static void main(String[] args) {
@@ -202,7 +215,7 @@ public class FullCycleStats {
         DecimalFormat df;
         float elapsedTimeMinutes;
 
-        filename = "game.txt";
+        filename = "gamed.txt";
 //		filename = "IO/bill.txt";
         sb = new StringBuilder();
         df = new DecimalFormat("#.#####");

@@ -1,18 +1,17 @@
-symbols a,b,c;
+symbols a,b,c,d;
 
-window 3x5;
+scatter c;
+window 3x3;
 
-reel reel1: 1*a,5*b,3*c;
-reel reel2: 4*a,4*b,9*c;
-reel reel3: 3*a,6*b,4*c;
-reel reel4: 5*a,3*b,6*c;
-reel reel5: 6*a,2*b,6*c;
-
-
-payline payline1: 2,2,2,2,2;
+reel reel1: 1*a,1*b,1*c,1*d;
+reel reel2: 1*a,1*b,2*c,1*d;
+reel reel3: 1*a,1*b,1*c,1*d;
 
 
-pay 2,5,25,100 left 2,3,4,5 a;
-pay 5,25,100 left 3,4,5 b;
-pay 5,25,100 left 3,4,5 c;
+
+payline payline1: 2,2,2;
+
+
+
+scatter c pays 50,100 on 2,3;
 
