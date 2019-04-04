@@ -1,6 +1,7 @@
 
 public class Parser {
 
+	private final String allText; 
 	private final SymbolParser symbolParser;
 	private final WindowParser windowParser;
 	private final ReelParser reelParser;
@@ -12,7 +13,7 @@ public class Parser {
 	public Parser(In in) {
 		if (in == null)
 			throw new IllegalArgumentException("first argument to constructor is null");
-		String allText = in.readAll();
+		allText = in.readAll();
 
 		symbolParser = new SymbolParser(allText);
 		windowParser = new WindowParser(allText);
@@ -84,6 +85,10 @@ public class Parser {
 	 */
 	public ScatterParser getScatterParser() {
 		return scatterParser;
+	}
+	
+	public String getAllText() {
+		return allText;
 	}
 	
 
