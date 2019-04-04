@@ -62,7 +62,7 @@ public class ScatterManager {
         int nCombinations = 1;
         for (int i = 0; i < nReels; i++) {
             int scatterInReel = scatterToSumLists.get(scatter)[i].get(indices[i]);
-            if (scatterInReel != 0)
+            if (scatterInReel > 0)
                 nCombinations *= scatterInReel;
         }
         return nCombinations;
