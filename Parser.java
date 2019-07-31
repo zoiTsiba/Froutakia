@@ -10,10 +10,10 @@ public class Parser {
 	private final WildcardParser wildcardParser;
 	private final ScatterParser scatterParser;
 
-	public Parser(In in) {
-		if (in == null)
+	public Parser(String text) {
+		if (text == null)
 			throw new IllegalArgumentException("first argument to constructor is null");
-		allText = in.readAll();
+		allText = text;
 
 		symbolParser = new SymbolParser(allText);
 		windowParser = new WindowParser(allText);

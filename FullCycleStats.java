@@ -222,7 +222,7 @@ public class FullCycleStats {
 
         start = System.currentTimeMillis();
         In in = new In(filename);
-        Manager manager = new Manager(in);
+        Manager manager = new Manager(in.readAll());
         FullCycleStats fcs = new FullCycleStats(manager);
         end = System.currentTimeMillis();
 

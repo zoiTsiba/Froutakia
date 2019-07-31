@@ -10,12 +10,12 @@ public class Manager {
 	private final RewardManager rewardManager;
 	
 	
-	public Manager(In in) {
-		if (in == null) {
+	public Manager(String text) {
+		if (text == null) {
 			throw new IllegalArgumentException("argument to constructor is null");
 		}
 
-		this.parser = new Parser(in);
+		this.parser = new Parser(text);
 		this.symbolManager = new SymbolManager(this);
 		this.windowManager = new WindowManager(this);
 		this.reelManager = new ReelManager(this);
@@ -82,7 +82,7 @@ public class Manager {
 		
         String filename = "IO/game.txt";
 		In in = new In(filename);
-		Manager manager = new Manager(in);
+		Manager manager = new Manager(in.readAll());
 		
 		SymbolManager sm = manager.getSymbolManager();
 		System.out.println(sm.isWildcard("g"));
