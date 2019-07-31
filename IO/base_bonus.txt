@@ -1,0 +1,35 @@
+BASE_GAME;
+
+symbols a,b,c,d;
+wild d;
+scatter c pays 5,50,500 on 2,3,4;
+
+window 3x4;
+
+reel reel1: a,b,c,d;
+reel reel2: a,b,c,d;
+reel reel3: a,b,c,d;
+reel reel4: 1*a,1*b,1*c,1*d;
+
+payline payline1: 2,2,2,2;
+payline payline2: (1,1),(2,1),(3,1);
+payline payline3: 2,3,1,2;
+
+pay 1     right a,a,b,b;
+pay 10    left a,a,a,a;
+pay 1000  left b,b,b,b;
+pay 10000 left c,c,c,c;
+
+BONUS_GAME;
+
+symbols a,b,c,d;
+
+window 3x3;
+
+reel reel1: 2*a,1*b,1*c,1*d;
+reel reel2: 3*a,1*b,1*c,2*d;
+reel reel3: 1*a,1*b,2*c,1*d;
+
+payline payline1: 2,2,2;
+
+scatter d pays 50,100 on 2,3;
